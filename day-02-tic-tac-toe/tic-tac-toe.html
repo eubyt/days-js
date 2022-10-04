@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        flex-direction: column;
+      }
+      .row {
+        display: flex;
+      }
+      .col {
+        width: 100px;
+        height: 100px;
+        border: 1px solid black;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 50px;
+      }
+
+      .col:hover[active="true"] {
+        background-color: #ccc;
+        cursor: pointer;
+      }
+
+      button {
+        width: 80px;
+        height: 30px;
+        font-size: 18px;
+        margin-top: 1rem;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="board"></div>
+    <div>
+      <button>Reset</button>
+    </div>
+    <script>
+      window.onload = function () {
+        const board = document.getElementById("board");
+        const button = document.querySelector("button");
+
+        const size = 3;
+
+        let cells = [];
+        let vez = "X";
+
+        function verifyWinner() {
+          let winner = null;
+          let count = 0;
+
+          const check = () => {
+            count++;
+            if (count === size) {
+              winner = vez;
+              alert(`O jogador ${vez} venceu!`);
+            }
+          };
+
+          // Horizontal e Vertical
+          for (let i = 0; i < size; i++) {
+            for (let j = 0; j < size; j++) {
+              if (cells[i][j] !== vez) {
+                count = 0;
+                break;
+              }
+              check();
+            }
+
+            for (let j = 0; j < size; j++) {
+              if (cells[j][i] !== vez) {
+                count = 0;
+                break;
+              }
+              check();
+            }
+          }
+
+          // Diagonais
+          for (let i = 0; i < size; i++) {
+            if (cells[i][i] !== vez) {
+              count = 0;
+              break;
+            } else {
+              check();
+            }
+          }
+
+          for (let i = 0; i < size; i++) {
+            if (cells[i][size - i - 1] !== vez) {
+              count = 0;
+              break;
+            } else {
+              check();
+            }
+          }
+        }
+
+        function resetGame() {
+          cells = [];
+          board.innerHTML = "";
+
+          for (let i = 0; i < size; i++) {
+            const row = document.createElement("div");
+            row.classList.add("row");
+
+            for (let j = 0; j < size; j++) {
+              const cell = document.createElement("div");
+              cell.classList.add("col");
+              cell.setAttribute("active", true);
+              cell.addEventListener("click", () => {
+                if (cells[i][j]) {
+                  return;
+                }
+
+                cell.setAttribute("active", false);
+                cells[i][j] = vez;
+                cell.innerText = vez;
+
+                verifyWinner();
+
+                // Trocar a vez
+                if (vez === "X") vez = "O";
+                else vez = "X";
+              });
+
+              cells[i] = [];
+              row.appendChild(cell);
+            }
+
+            board.appendChild(row);
+          }
+        }
+
+        resetGame();
+        button.addEventListener("click", resetGame);
+      };
+    </script>
+  </body>
+</html>
