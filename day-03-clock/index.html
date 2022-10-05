@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: sans-serif;
+        text-align: center;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        flex-direction: column;
+      }
+
+      clock {
+        padding: 5rem;
+        background-color: #eee;
+        border-radius: 5px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+        user-select: none;
+        font-size: calc(2rem + 1vw);
+        width: min(100%, 40rem);
+      }
+
+      button {
+        font-size: 1rem;
+        padding: 0.5rem 1rem;
+        border: none;
+        border-radius: 5px;
+        background-color: #eee;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+        cursor: pointer;
+        margin: 1rem;
+      }
+    </style>
+  </head>
+  <body>
+    <clock></clock>
+    <div>
+      <button id="addMin">+1 min</button>
+      <button id="removeMin">-1 min</button>
+    </div>
+  </body>
+
+  <script>
+    window.onload = function () {
+      let min = 0;
+      const clock = document.querySelector("clock");
+
+      const addMin = document.querySelector("#addMin");
+      const removeMin = document.querySelector("#removeMin");
+
+      addMin.addEventListener("click", () => min++);
+      removeMin.addEventListener("click", () => min--);
+
+      function clockMount() {
+        const date = new Date();
+        date.setMinutes(date.getMinutes() + min);
+
+        function fixZeroMiliseconds(miliseconds) {
+          if (miliseconds < 100 && miliseconds >= 10) {
+            return "0" + miliseconds;
+          } else if (miliseconds < 10) {
+            return "00" + miliseconds;
+          } else {
+            return miliseconds;
+          }
+        }
+
+        clock.innerHTML =
+          date.toLocaleTimeString("pt-BR") +
+          `.${fixZeroMiliseconds(date.getMilliseconds())}`;
+      }
+
+      setInterval(clockMount, 200);
+    };
+  </script>
+</html>
