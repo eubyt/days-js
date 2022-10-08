@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      * {
+        margin: 10px 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background-color: #f5f5f5;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        flex-direction: column;
+      }
+
+      .card {
+        width: 300px;
+        background-color: #fff;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgb(0 0 0 / 20%);
+        display: flex;
+        flex-direction: row-reverse;
+        justify-content: center;
+        align-items: center;
+        padding: 20px;
+      }
+
+      button {
+        padding: 10px 20px;
+        border: none;
+        border-radius: 5px;
+        background-color: #333;
+        color: #fff;
+        font-size: 1rem;
+        cursor: pointer;
+      }
+
+      input {
+        margin: 0 10px !important;
+        padding: 10px;
+        font-size: 1rem;
+        margin: 5px;
+        border: none;
+        outline: none;
+      }
+    </style>
+  </head>
+  <body>
+    <todo>
+      <div class="card">
+        <p>Lista</p>
+      </div>
+    </todo>
+    <input type="text" placeholder="Tarefa" />
+    <button id="copy">Adicionar</button>
+  </body>
+
+  <script>
+    window.onload = function () {
+      const todo = document.querySelector("todo");
+      const input = document.querySelector("input");
+      const button = document.querySelector("button");
+
+      const card = document.querySelector(".card");
+
+      const localStore = localStorage.getItem("todo");
+      let todoList = localStore ? JSON.parse(localStore) : [];
+
+      function addCard(value, checked) {
+        const copyCard = card.cloneNode(true);
+
+        const checkbox = document.createElement("input");
+        checkbox.type = "checkbox";
+        checkbox.id = value;
+        checkbox.checked = checked;
+
+        checkbox.addEventListener("change", (e) => {
+          const currentTodo = todoList.find((item) => {
+            if (item.task === e.target.id) {
+              return item;
+            }
+          });
+
+          currentTodo.checked = e.target.checked;
+          localStorage.setItem("todo", JSON.stringify(todoList));
+        });
+
+        copyCard.appendChild(checkbox);
+
+        copyCard.querySelector("p").textContent = value;
+        todo.insertAdjacentElement("beforeend", copyCard);
+      }
+
+      for (let i = 0; i < todoList.length; i++) {
+        const value = todoList[i];
+        addCard(value.task, value.checked);
+      }
+
+      button.onclick = function () {
+        if (input.value == "") return;
+        addCard(input.value);
+
+        todoList.push({ task: input.value });
+        localStorage.setItem("todo", JSON.stringify(todoList));
+      };
+    };
+  </script>
+</html>
